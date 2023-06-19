@@ -3,12 +3,15 @@ package server
 import (
 	_ "main/docs"
 
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
+	provider "main/server/gateway"
+	"main/server/handler"
 )
 
 func ConfigureRoutes(server *Server) {
-	
-	server.engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	
+
+	//aloowing cors to each route
+	server.engine.Use(provider.CORSMiddleware())
+	server.engine.GET("/login", provider.UserDetailsMiddleware, handler.LoginHandler)
+	server.engine.POST("/reset", provider.ResetMiddleware, handler.ResetHandler)
+
 }

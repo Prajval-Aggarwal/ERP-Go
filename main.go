@@ -15,8 +15,8 @@ import (
 // @description This is a demo version of Gin app.
 // @BasePath /
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
+	if err := godotenv.Load("/home/chicmic/go/src/github.com/Prajval-Aggarwal/mattermost-go-server/.env"); err != nil {
+		log.Fatal("Error loadsadsading .env file")
 	}
 
 	connection := db.InitDB()

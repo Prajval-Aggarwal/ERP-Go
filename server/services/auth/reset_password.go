@@ -1,4 +1,4 @@
-package resetpassword
+package auth
 
 import (
 	"fmt"

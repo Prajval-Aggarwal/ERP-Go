@@ -1,4 +1,4 @@
-package login
+package auth
 
 import (
 	"bytes"
@@ -107,37 +107,32 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 	mmuserid := resp.Cookies()[1]
 	mmcsrf := resp.Cookies()[2]
 
-	cookie1 := &http.Cookie{
+	mmauthCookie := &http.Cookie{
 		Name:     "MMAUTHTOKEN",
 		Value:    mmauthtoken.Value,
 		MaxAge:   mmauthtoken.MaxAge,
 		Path:     "/",
 		HttpOnly: false,
 	}
-	cookie2 := &http.Cookie{
+	mmuserCookie := &http.Cookie{
 		Name:     "MMUSERID",
 		Value:    mmuserid.Value,
 		MaxAge:   mmuserid.MaxAge,
 		Path:     "/",
-		Raw:      mmuserid.Raw,
 		HttpOnly: false,
 	}
 
-	cookie3 := &http.Cookie{
+	mmcsrfCookie := &http.Cookie{
 		Name:     "MMCSRF",
 		Value:    mmcsrf.Value,
 		MaxAge:   mmcsrf.MaxAge,
 		Path:     "/",
-		Raw:      mmcsrf.Raw,
 		HttpOnly: false,
 	}
 
-	// var cookies []*http.Cookie
-	// cookies = append(cookies, respCookies...)
-
-	http.SetCookie(ctx.Writer, cookie1)
-	http.SetCookie(ctx.Writer, cookie2)
-	http.SetCookie(ctx.Writer, cookie3)
+	http.SetCookie(ctx.Writer, mmauthCookie)
+	http.SetCookie(ctx.Writer, mmuserCookie)
+	http.SetCookie(ctx.Writer, mmcsrfCookie)
 
 	response.ShowResponse("Login  sucessfully", 200, "Success", nil, ctx)
 
@@ -154,7 +149,6 @@ func SignupApi(registerDetails model.Register, emailId string, name string, ctx 
 	split := strings.Split(lowercase, " ")
 	// joined := strings.Join(split, "_")
 
-	// fmt.Println("name extracted and chaneg is ", name, joined)
 	registerDetails.Username = split[0]
 	fmt.Println("register details is ", registerDetails)
 	registerData, err := json.Marshal(&registerDetails)
@@ -173,13 +167,17 @@ func SignupApi(registerDetails model.Register, emailId string, name string, ctx 
 	//fmt.Println("request: ", reqst)
 	reqst.Header.Add("X-Requested-With", "XMLHttpRequest")
 	if err != nil {
-		response.ShowResponse("Server Error", utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), "", ctx)
+		response.ShowResponse("Server Error", utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)
 		return false
 
 	}
 	resp, err := http.DefaultClient.Do(reqst)
 	if err != nil {
-		response.ShowResponse("Server Error", utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), "", ctx)
+		response.ShowResponse("Server Error", utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)
+		return false
+	}
+	if resp.StatusCode != 201 {
+		response.ShowResponse("Error", int64(resp.StatusCode), "", nil, ctx)
 		return false
 	}
 	fmt.Println("resposne from signup", resp)

@@ -97,7 +97,7 @@ func ResetMiddleware(ctx *gin.Context) {
 		return
 	}
 
-	req, err := http.NewRequest("GET", "https://timedragon.staging.chicmic.co.in/v1/user?_id="+tokenClaims.Id, nil)
+	req, err := http.NewRequest("GET", "https://timedragon.staging.frimustechnologies.com/v1/user?_id="+tokenClaims.Id, nil)
 	if err != nil {
 		response.ShowResponse(
 			"Error in making request",
@@ -143,7 +143,7 @@ func ResetMiddleware(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-
+	fmt.Println("sdfgsff: ", erpDetails)
 	ctx.Set("emailid", erpDetails.Data.SkypeId.Email)
 	ctx.Set("password", tokenRequest.Password)
 	ctx.Next()
@@ -152,20 +152,11 @@ func ResetMiddleware(ctx *gin.Context) {
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		fmt.Println("origin is", ctx.Request.Header.Get("Origin"))
 		ctx.Writer.Header().Set("Access-Control-Allow-Origin", ctx.Request.Header.Get("Origin"))
-		// //	ctx.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		// ctx.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		// ctx.Writer.Header().Set("Access-Control-Allow-Methods", "POST, DELETE, GET, PUT")
-
-		// if ctx.Request.Method != "OPTIONS" {
-		// 	ctx.AbortWithStatus(204)
-		// 	return
-		// }
-
-		//	ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		ctx.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		ctx.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		ctx.Writer.Header().Set("Access-Control-Allow-Methods", "*")
+		ctx.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		ctx.Writer.Header().Set("Access-Control-Allow-Methods", "POST, DELETE, GET, PUT")
 
 		if ctx.Request.Method == "OPTIONS" {
 			ctx.AbortWithStatus(204)

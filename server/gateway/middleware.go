@@ -15,8 +15,19 @@ import (
 )
 
 func UserDetailsMiddleware(ctx *gin.Context) {
-	token := ctx.Query("token")
+	var token string
+	if ctx.Query("token") != "" {
+		token = ctx.Query("token")
+	} else if ctx.Request.Header.Get("Authorization") != "" {
+		token = ctx.Request.Header.Get("Authorization")
+	}
 	fmt.Println("token from query is:", token)
+	if token == "" {
+		response.ShowResponse("Token bhejo bhai", utils.HTTP_BAD_REQUEST, "Failure", nil, ctx)
+		fmt.Println("dfjknwjfb")
+		ctx.Abort()
+		return
+	}
 	req, err := http.NewRequest("POST", "https://timedragon.staging.frimustechnologies.com/v1/auth/check_authenticated", nil)
 	if err != nil {
 		response.ShowResponse(

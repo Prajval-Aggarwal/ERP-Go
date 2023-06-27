@@ -2,6 +2,7 @@ package auth
 
 import (
 	"fmt"
+	"main/server/db"
 	"main/server/response"
 	"main/server/utils"
 	"net/http"
@@ -9,35 +10,30 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func LogoutService(ctx *gin.Context) {
+func LogoutService(ctx *gin.Context, emailId string) {
 
-	//deleting the cookies
-	mmauthCookie := &http.Cookie{
-		Name:     "MMAUTHTOKEN",
-		Value:    "",
-		MaxAge:   -1,
-		Path:     "/",
-		HttpOnly: false,
-	}
-	mmuserCookie := &http.Cookie{
-		Name:     "MMUSERID",
-		Value:    "",
-		MaxAge:   -1,
-		Path:     "/",
-		HttpOnly: false,
-	}
+	fmt.Println("email id:", emailId)
+	var userId string
+	query := "SELECT id from users where email=?"
+	db.QueryExecutor(query, &userId, emailId)
+	fmt.Println("user id: ", userId)
+	var sessionToken string
+	query = "SELECT token from sessions where userid=?"
 
-	mmcsrfCookie := &http.Cookie{
-		Name:     "MMCSRF",
-		Value:    "",
-		MaxAge:   -1,
-		Path:     "/",
-		HttpOnly: false,
-	}
+	db.QueryExecutor(query, &sessionToken, userId)
 
-	http.SetCookie(ctx.Writer, mmauthCookie)
-	http.SetCookie(ctx.Writer, mmuserCookie)
-	http.SetCookie(ctx.Writer, mmcsrfCookie)
+	fmt.Println("session token: ", sessionToken)
+
+	// cookies, _ := ctx.Request.Cookie("MMAUTHTOKEN")
+	// fmt.Println("cookies", cookies.Value)
+	// //deleting the cookies
+	// mmauthCookie := &http.Cookie{
+	// 	Name:     "MMAUTHTOKEN",
+	// 	Value:    sessionToken,
+	// 	MaxAge:   0,
+	// 	Path:     "/",
+	// 	HttpOnly: false,
+	// }
 
 	//call mattermost logout api
 	reqst, err := http.NewRequest("POST", "http://192.180.0.123:8065/api/v4/users/logout", nil)
@@ -48,6 +44,8 @@ func LogoutService(ctx *gin.Context) {
 
 	}
 	reqst.Header.Add("X-Requested-With", "XMLHttpRequest")
+	reqst.Header.Add("Cookie", "MMAUTHTOKEN="+sessionToken)
+	// http.SetCookie(ctx.Writer, mmauthCookie)
 	//reqst.Header.Add("Origin", ctx.Request.Header.Get("Origin"))
 	fmt.Println("request: ", reqst)
 	resp, err := http.DefaultClient.Do(reqst)

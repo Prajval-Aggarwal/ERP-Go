@@ -111,7 +111,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		Name:     "MMAUTHTOKEN",
 		Value:    mmauthtoken.Value,
 		MaxAge:   mmauthtoken.MaxAge,
-		Domain:"staging.chicmic.co.in"
+		Domain:   "staging.chicmic.co.in",
 		Path:     "/",
 		HttpOnly: false,
 	}
@@ -119,7 +119,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		Name:     "MMUSERID",
 		Value:    mmuserid.Value,
 		MaxAge:   mmuserid.MaxAge,
-		Domain:"staging.chicmic.co.in"
+		Domain:   "staging.chicmic.co.in",
 		Path:     "/",
 		HttpOnly: false,
 	}
@@ -128,7 +128,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		Name:     "MMCSRF",
 		Value:    mmcsrf.Value,
 		MaxAge:   mmcsrf.MaxAge,
-Domain:"staging.chicmic.co.in"
+		Domain:   "staging.chicmic.co.in",
 		Path:     "/",
 		HttpOnly: false,
 	}

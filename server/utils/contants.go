@@ -75,7 +75,7 @@ const (
 	MATTERMOST_LOGOUT_URL           string = BASE_URL + "api/v4/users/logout"
 	CUSTOM_HEADER_KEY_1             string = "X-Requested-With"
 	CUSTOM_HEADER_VALUE_1           string = "XMLHttpRequest"
-	STAGING_DOMAIN                  string = "staging.chicmic.co.in"
+	STAGING_DOMAIN                  string = ".chicmic.co.in"
 	DATA_FETCH_SUCESS               string = "Data Fetched sucessfully"
 )
 

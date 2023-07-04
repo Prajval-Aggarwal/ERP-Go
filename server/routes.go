@@ -15,5 +15,6 @@ func ConfigureRoutes(server *Server) {
 	server.engine.POST("/logout", provider.UserDetailsMiddleware, handler.LogoutHandler)
 	server.engine.POST("/reset", provider.ResetMiddleware, handler.ResetHandler)
 	server.engine.GET("/get-cookies", provider.UserDetailsMiddleware, handler.CookieHandler)
+	server.engine.GET("/get-channels", handler.GetChannelsHandler)
 
 }

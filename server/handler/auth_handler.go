@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"main/server/services/auth"
 
 	"github.com/gin-gonic/gin"
@@ -23,5 +24,12 @@ func ResetHandler(ctx *gin.Context) {
 
 func CookieHandler(ctx *gin.Context) {
 	emailId, _ := ctx.Get("emailid")
+	fmt.Println("email id is:", emailId)
 	auth.CookieService(ctx, emailId.(string))
+}
+
+func GetChannelsHandler(ctx *gin.Context) {
+	userId := ctx.Query("userId")
+
+	auth.GetChannelService(ctx, userId)
 }

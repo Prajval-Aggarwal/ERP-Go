@@ -17,101 +17,89 @@ import (
 func LoginService(ctx *gin.Context, emailId string, name string) {
 	var loginDetails model.Login
 	var registerDetails model.Register
-	//fmt.Println("Request: ", Request)
+
+	// Check if the user already exists in the database
 	if db.RecordExist("users", emailId, "email") {
-		fmt.Println("login api hit only")
-		//LOGIN API
+		fmt.Println("LOGIN APIS")
+		// Invoke the Login API
 		loginReturn := LoginApi(loginDetails, emailId, ctx)
 		if !loginReturn {
 			fmt.Println("login return is:", loginReturn)
 			return
 		}
-
 	} else {
-		//SIGNUP API
-		fmt.Println("signup and login api hit")
-		singupReturn := SignupApi(registerDetails, emailId, name, ctx)
-		if !singupReturn {
-			fmt.Println("sighunup return is:", singupReturn)
+		// The user does not exist, proceed with signup process
+		fmt.Println("SIGNUP following LOGIN")
+
+		// Invoke the Signup API
+		signupReturn := SignupApi(registerDetails, emailId, name, ctx)
+		if !signupReturn {
+			fmt.Println("signup return is:", signupReturn)
 			return
 		}
-		// var userId struct {
-		// 	Id string `json:"id"`
-		// }
-		// query := "SELECT id FROM users WHERE email=?"
-		// db.QueryExecutor(query, &userId, emailId)
-		// fmt.Println("user id is", userId.Id)
 
-		// var teamId struct {
-		// 	Id string `json:"id"`
-		// }
-		// query = "SELECT id FROM teams where name = 'chicmic1'"
-		// db.QueryExecutor(query, &teamId)
-		// fmt.Println("teamid: ", teamId.Id)
-		// query = "INSERT INTO teammembers(teamid,userid,schemeuser) VALUES(?,?,?)"
-		// err := db.RawExecutor(query, teamId.Id, userId.Id, true)
-		// if err != nil {
-		// 	fmt.Println("error is ", err.Error())
-		// 	return
-		// }
-
+		// Signup successful, now invoke the Login API
 		loginReturn := LoginApi(loginDetails, emailId, ctx)
-		fmt.Println("loginreturn is", loginReturn)
-
+		fmt.Println("login return is", loginReturn)
 	}
-
 }
 
 func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
-	//ctx.Header("Referrer-Policy", "no-referrer")
-	fmt.Println("record found")
+	// Set the email and password in the loginDetails struct
 	loginDetails.Email = emailId
 	loginDetails.Password = "123456"
 
+	// Marshal the loginDetails struct into JSON
 	loginMarshalData, err := json.Marshal(&loginDetails)
 	if err != nil {
+		// Handle encoding error and show appropriate response
 		response.ShowResponse(
-			"Error in Encoding data",
+			utils.ENCODING_ERROR,
 			utils.HTTP_BAD_REQUEST,
-			"Failure",
+			utils.FAILURE,
 			nil,
 			ctx,
 		)
 		return false
 	}
-	fmt.Println("login details: ", loginDetails)
-	reqst, err := http.NewRequest("POST", "http://192.180.0.123:8065/api/v4/users/login", bytes.NewBuffer(loginMarshalData))
 
+	// Create a new HTTP POST request to the Mattermost login URL
+	reqst, err := http.NewRequest(utils.REQUEST_POST, utils.MATTERMOST_LOGIN_URL, bytes.NewBuffer(loginMarshalData))
 	if err != nil {
-		response.ShowResponse("Server Error", utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)
+		// Handle error while creating the request and show appropriate response
+		response.ShowResponse(utils.SERVER_ERROR, utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)
 		return false
-
 	}
-	reqst.Header.Add("X-Requested-With", "XMLHttpRequest")
-	//reqst.Header.Add("Origin", ctx.Request.Header.Get("Origin"))
-	fmt.Println("request: ", reqst)
+
+	// Add custom header to the request
+	reqst.Header.Add(utils.CUSTOM_HEADER_KEY_1, utils.CUSTOM_HEADER_VALUE_1)
+
+	// Perform the HTTP request
 	resp, err := http.DefaultClient.Do(reqst)
 	if err != nil {
-		response.ShowResponse("Server Error", utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)
-		return false
-	}
-	fmt.Println("response is:", resp)
-	if resp.StatusCode != 200 {
-		response.ShowResponse("Error", int64(resp.StatusCode), "", nil, ctx)
+		// Handle error while performing the request and show appropriate response
+		response.ShowResponse(utils.SERVER_ERROR, utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)
 		return false
 	}
 
-	fmt.Println("re", resp.Cookies())
-	// respCookies := resp.Cookies()
+	// Check the response status code
+	if resp.StatusCode != 200 {
+		// Show appropriate response if the status code is not 200
+		response.ShowResponse(utils.ERROR, int64(resp.StatusCode), "", nil, ctx)
+		return false
+	}
+
+	// Extract the required cookies from the response
 	mmauthtoken := resp.Cookies()[0]
 	mmuserid := resp.Cookies()[1]
 	mmcsrf := resp.Cookies()[2]
 
+	// Create new cookies with the extracted values
 	mmauthCookie := &http.Cookie{
 		Name:     "MMAUTHTOKEN",
 		Value:    mmauthtoken.Value,
 		MaxAge:   mmauthtoken.MaxAge,
-		Domain:   "staging.chicmic.co.in",
+		Domain:   utils.STAGING_DOMAIN,
 		Path:     "/",
 		HttpOnly: false,
 	}
@@ -119,70 +107,84 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		Name:     "MMUSERID",
 		Value:    mmuserid.Value,
 		MaxAge:   mmuserid.MaxAge,
-		Domain:   "staging.chicmic.co.in",
+		Domain:   utils.STAGING_DOMAIN,
 		Path:     "/",
 		HttpOnly: false,
 	}
-
 	mmcsrfCookie := &http.Cookie{
 		Name:     "MMCSRF",
 		Value:    mmcsrf.Value,
 		MaxAge:   mmcsrf.MaxAge,
-		Domain:   "staging.chicmic.co.in",
+		Domain:   utils.STAGING_DOMAIN,
 		Path:     "/",
 		HttpOnly: false,
 	}
 
+	// Set the cookies in the response writer
 	http.SetCookie(ctx.Writer, mmauthCookie)
 	http.SetCookie(ctx.Writer, mmuserCookie)
 	http.SetCookie(ctx.Writer, mmcsrfCookie)
 
-	response.ShowResponse("Login  sucessfully", 200, "Success", nil, ctx)
+	// Show the login success response
+	response.ShowResponse(utils.LOGIN_SUCCESSFULL, utils.HTTP_OK, utils.SUCCESS, nil, ctx)
 
 	return true
 }
 
 func SignupApi(registerDetails model.Register, emailId string, name string, ctx *gin.Context) bool {
-	fmt.Println("record not found")
+	fmt.Println("user record not found")
+
+	// Set the email and password in the registerDetails struct
 	registerDetails.Email = emailId
 	registerDetails.Password = "123456"
 
-	//remove spce from the name and add _ to it
+	// Remove spaces from the name and convert it to lowercase
 	lowercase := strings.ToLower(name)
 	split := strings.Split(lowercase, " ")
-	// joined := strings.Join(split, "_")
-
 	registerDetails.Username = split[0]
-	fmt.Println("register details is ", registerDetails)
+
+	fmt.Println("register details:", registerDetails)
+
+	// Marshal the registerDetails struct into JSON
 	registerData, err := json.Marshal(&registerDetails)
 	if err != nil {
+		// Handle encoding error and show appropriate response
 		response.ShowResponse(
-			"Error in Encoding data",
+			utils.ENCODING_ERROR,
 			utils.HTTP_BAD_REQUEST,
-			"Failure",
+			utils.FAILURE,
 			nil,
 			ctx,
 		)
 		return false
 	}
-	fmt.Println("resgistered data: ", string(registerData))
-	reqst, err := http.NewRequest("POST", "http://192.180.0.123:8065/api/v4/users", bytes.NewBuffer(registerData))
-	//fmt.Println("request: ", reqst)
-	reqst.Header.Add("X-Requested-With", "XMLHttpRequest")
-	if err != nil {
-		response.ShowResponse("Server Error", utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)
-		return false
 
+	fmt.Println("registered data:", string(registerData))
+
+	// Create a new HTTP POST request to the Mattermost signup URL
+	reqst, err := http.NewRequest(utils.REQUEST_POST, utils.MATTERMOST_SIGNUP_URL, bytes.NewBuffer(registerData))
+	reqst.Header.Add(utils.CUSTOM_HEADER_KEY_1, utils.CUSTOM_HEADER_VALUE_1)
+	if err != nil {
+		// Handle error while creating the request and show appropriate response
+		response.ShowResponse(utils.SERVER_ERROR, utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)
+		return false
 	}
+
+	// Perform the HTTP request
 	resp, err := http.DefaultClient.Do(reqst)
 	if err != nil {
-		response.ShowResponse("Server Error", utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)
+		// Handle error while performing the request and show appropriate response
+		response.ShowResponse(utils.SERVER_ERROR, utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)
 		return false
 	}
+
+	// Check the response status code
 	if resp.StatusCode != 201 {
-		response.ShowResponse("Error", int64(resp.StatusCode), "", nil, ctx)
+		// Show appropriate response if the status code is not 201
+		response.ShowResponse(utils.ERROR, int64(resp.StatusCode), "", nil, ctx)
 		return false
 	}
-	fmt.Println("resposne from signup", resp)
+
+	fmt.Println("Response from signup:", resp)
 	return true
 }

@@ -63,8 +63,8 @@ func RecordExist(tableName string, value string, columnName string) bool {
 	return exists
 }
 
-func RawExecutor(querry string, args ...interface{}) error {
-	err := db.Exec(querry, args...).Error
+func RawExecutor(query string, args ...interface{}) error {
+	err := db.Exec(query, args...).Error
 	if err != nil {
 		return err
 	}

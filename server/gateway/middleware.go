@@ -16,43 +16,42 @@ import (
 
 func UserDetailsMiddleware(ctx *gin.Context) {
 	var token string
-	if ctx.Query("token") != "" {
-		token = ctx.Query("token")
-	} else if ctx.Request.Header.Get("Authorization") != "" {
-		token = ctx.Request.Header.Get("Authorization")
+	if ctx.Query(utils.TOKEN) != "" {
+		token = ctx.Query(utils.TOKEN)
+	} else if ctx.Request.Header.Get(utils.AUTHORIZATION_HEADER) != "" {
+		token = ctx.Request.Header.Get(utils.AUTHORIZATION_HEADER)
 	}
 	fmt.Println("token from query is:", token)
 	if token == "" {
-		response.ShowResponse("Token bhejo bhai", utils.HTTP_BAD_REQUEST, "Failure", nil, ctx)
-		fmt.Println("dfjknwjfb")
+		response.ShowResponse(utils.TOKEN_NOT_FOUND, utils.HTTP_BAD_REQUEST, utils.FAILURE, nil, ctx)
 		ctx.Abort()
 		return
 	}
-	req, err := http.NewRequest("POST", "https://timedragon.staging.frimustechnologies.com/v1/auth/check_authenticated", nil)
+	req, err := http.NewRequest(utils.REQUEST_POST, utils.STAGING_USER_AUTHENTICATION_URL, nil)
 	if err != nil {
 		response.ShowResponse(
-			"Error in making request",
+			utils.ERROR_IN_HTTP_REQUEST,
 			utils.HTTP_BAD_REQUEST,
-			"Failure",
+			utils.FAILURE,
 			nil,
 			ctx,
 		)
 		ctx.Abort()
 		return
 	}
-	req.Header.Set("Authorization", token)
+	req.Header.Set(utils.AUTHORIZATION_HEADER, token)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		response.ShowResponse("Server Error", utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), "", ctx)
+		response.ShowResponse(utils.SERVER_ERROR, utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), "", ctx)
 		ctx.Abort()
 		return
 	}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		response.ShowResponse(
-			"Error in reading response body",
+			utils.RESPONSE_BODY_ERROR,
 			utils.HTTP_BAD_REQUEST,
-			"Failure",
+			utils.FAILURE,
 			nil,
 			ctx,
 		)
@@ -64,9 +63,9 @@ func UserDetailsMiddleware(ctx *gin.Context) {
 	err = json.Unmarshal(body, &erpDetails)
 	if err != nil {
 		response.ShowResponse(
-			"Error in unmarshalling the reponse body",
+			utils.UNMARSHALLING_ERROR,
 			utils.HTTP_BAD_REQUEST,
-			"Failure",
+			utils.FAILURE,
 			nil,
 			ctx,
 		)
@@ -85,9 +84,9 @@ func ResetMiddleware(ctx *gin.Context) {
 	err := utils.RequestDecoding(ctx, &tokenRequest)
 	if err != nil {
 		response.ShowResponse(
-			"Error decoding request",
+			utils.DECODING_ERROR,
 			utils.HTTP_BAD_REQUEST,
-			"Failure",
+			utils.FAILURE,
 			nil,
 			ctx,
 		)
@@ -98,9 +97,9 @@ func ResetMiddleware(ctx *gin.Context) {
 	tokenClaims, err := token.DecodeToken(tokenRequest.Token)
 	if err != nil {
 		response.ShowResponse(
-			"Error decoding login request",
+			utils.DECODING_ERROR,
 			utils.HTTP_BAD_REQUEST,
-			"Failure",
+			utils.FAILURE,
 			nil,
 			ctx,
 		)
@@ -108,22 +107,22 @@ func ResetMiddleware(ctx *gin.Context) {
 		return
 	}
 
-	req, err := http.NewRequest("GET", "https://timedragon.staging.frimustechnologies.com/v1/user?_id="+tokenClaims.Id, nil)
+	req, err := http.NewRequest(utils.REQUEST_GET, utils.STAGING_USER_URL+tokenClaims.Id, nil)
 	if err != nil {
 		response.ShowResponse(
-			"Error in making request",
+			utils.ERROR_IN_HTTP_REQUEST,
 			utils.HTTP_BAD_REQUEST,
-			"Failure",
+			utils.FAILURE,
 			nil,
 			ctx,
 		)
 		ctx.Abort()
 		return
 	}
-	req.Header.Set("Authorization", tokenRequest.Token)
+	req.Header.Set(utils.AUTHORIZATION_HEADER, tokenRequest.Token)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		response.ShowResponse("Server Error", utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), "", ctx)
+		response.ShowResponse(utils.SERVER_ERROR, utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), "", ctx)
 		ctx.Abort()
 		return
 	}
@@ -131,9 +130,9 @@ func ResetMiddleware(ctx *gin.Context) {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		response.ShowResponse(
-			"Error in reading response body",
+			utils.RESPONSE_BODY_ERROR,
 			utils.HTTP_BAD_REQUEST,
-			"Failure",
+			utils.FAILURE,
 			nil,
 			ctx,
 		)
@@ -145,16 +144,16 @@ func ResetMiddleware(ctx *gin.Context) {
 	err = json.Unmarshal(body, &erpDetails)
 	if err != nil {
 		response.ShowResponse(
-			"Error in unmarshalling the reponse body",
+			utils.UNMARSHALLING_ERROR,
 			utils.HTTP_BAD_REQUEST,
-			"Failure",
+			utils.FAILURE,
 			nil,
 			ctx,
 		)
 		ctx.Abort()
 		return
 	}
-	fmt.Println("sdfgsff: ", erpDetails)
+	fmt.Println("ERP details: ", erpDetails)
 	ctx.Set("emailid", erpDetails.Data.SkypeId.Email)
 	ctx.Set("password", tokenRequest.Password)
 	ctx.Next()

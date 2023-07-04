@@ -36,7 +36,7 @@ func LogoutService(ctx *gin.Context, emailId string) {
 	// }
 
 	//call mattermost logout api
-	reqst, err := http.NewRequest("POST", "http://192.180.0.123:8065/api/v4/users/logout", nil)
+	reqst, err := http.NewRequest("POST", "https://webapp.staging.chicmic.co.in/api/v4/users/logout", nil)
 
 	if err != nil {
 		response.ShowResponse("Server Error", utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)

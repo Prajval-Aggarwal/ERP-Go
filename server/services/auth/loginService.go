@@ -80,7 +80,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		return false
 	}
 	fmt.Println("login details: ", loginDetails)
-	reqst, err := http.NewRequest("POST", "http://192.180.0.123:8065/api/v4/users/login", bytes.NewBuffer(loginMarshalData))
+	reqst, err := http.NewRequest("POST", "https://webapp.staging.chicmic.co.in/api/v4/users/login", bytes.NewBuffer(loginMarshalData))
 
 	if err != nil {
 		response.ShowResponse("Server Error", utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)
@@ -166,7 +166,7 @@ func SignupApi(registerDetails model.Register, emailId string, name string, ctx 
 		return false
 	}
 	fmt.Println("resgistered data: ", string(registerData))
-	reqst, err := http.NewRequest("POST", "http://192.180.0.123:8065/api/v4/users", bytes.NewBuffer(registerData))
+	reqst, err := http.NewRequest("POST", "https://webapp.staging.chicmic.co.in/api/v4/users", bytes.NewBuffer(registerData))
 	//fmt.Println("request: ", reqst)
 	reqst.Header.Add("X-Requested-With", "XMLHttpRequest")
 	if err != nil {

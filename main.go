@@ -16,7 +16,7 @@ import (
 // @BasePath /
 func main() {
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loadsadsading .env file")
+		log.Fatal("Error loadding .env file")
 	}
 
 	connection := db.InitDB()

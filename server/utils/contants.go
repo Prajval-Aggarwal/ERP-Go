@@ -65,16 +65,18 @@ const (
 )
 
 const (
+	BASE_URL                        string = "https://webapp.staging.chicmic.co.in/"
 	STAGING_USER_AUTHENTICATION_URL string = "https://timedragon.staging.frimustechnologies.com/v1/auth/check_authenticated"
 	REQUEST_POST                    string = "POST"
 	STAGING_USER_URL                string = "https://timedragon.staging.frimustechnologies.com/v1/user?_id="
 	REQUEST_GET                     string = "GET"
-	MATTERMOST_LOGIN_URL            string = "http://192.180.0.123:8065/api/v4/users/login"
-	MATTERMOST_SIGNUP_URL           string = "http://192.180.0.123:8065/api/v4/users"
-	MATTERMOST_LOGOUT_URL           string = "http://192.180.0.123:8065/api/v4/users/logout"
+	MATTERMOST_LOGIN_URL            string = BASE_URL + "api/v4/users/login"
+	MATTERMOST_SIGNUP_URL           string = BASE_URL + "api/v4/users"
+	MATTERMOST_LOGOUT_URL           string = BASE_URL + "api/v4/users/logout"
 	CUSTOM_HEADER_KEY_1             string = "X-Requested-With"
 	CUSTOM_HEADER_VALUE_1           string = "XMLHttpRequest"
 	STAGING_DOMAIN                  string = "staging.chicmic.co.in"
+	DATA_FETCH_SUCESS               string = "Data Fetched sucessfully"
 )
 
 const (

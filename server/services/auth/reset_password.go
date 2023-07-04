@@ -4,21 +4,26 @@ import (
 	"fmt"
 	"main/server/db"
 	"main/server/response"
+	"main/server/utils"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func ResetMattermostPassword(ctx *gin.Context, password string, emailId string) {
-	fmt.Println("passwrod", password)
+	fmt.Println("password", password)
 	fmt.Println("email", emailId)
 
 	//hashedPass := HashPassword(password)
 	// query := "UPDATE users SET password = '" + password + "' WHERE email = '" + emailId + "'"
 	// fmt.Println("query", query)
 	query := "UPDATE users SET password=? WHERE email=?"
-	db.RawExecutor(query, password, emailId)
-	response.ShowResponse("Password update sucessfully", 200, "Success", nil, ctx)
+	err := db.RawExecutor(query, password, emailId)
+	if err != nil {
+		response.ShowResponse(utils.QUERYEXECUTOR_ERROR, utils.HTTP_BAD_REQUEST, utils.FAILURE, nil, ctx)
+		return
+	}
+	response.ShowResponse(utils.PASSWORD_UPDATE_SUCCESSFULL, utils.HTTP_OK, utils.SUCCESS, nil, ctx)
 
 }
 

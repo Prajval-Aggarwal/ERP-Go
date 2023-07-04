@@ -63,6 +63,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		return false
 	}
 
+
 	// Create a new HTTP POST request to the Mattermost login URL
 	reqst, err := http.NewRequest(utils.REQUEST_POST, utils.MATTERMOST_LOGIN_URL, bytes.NewBuffer(loginMarshalData))
 	if err != nil {
@@ -159,11 +160,13 @@ func SignupApi(registerDetails model.Register, emailId string, name string, ctx 
 		return false
 	}
 
+
 	fmt.Println("registered data:", string(registerData))
 
 	// Create a new HTTP POST request to the Mattermost signup URL
 	reqst, err := http.NewRequest(utils.REQUEST_POST, utils.MATTERMOST_SIGNUP_URL, bytes.NewBuffer(registerData))
 	reqst.Header.Add(utils.CUSTOM_HEADER_KEY_1, utils.CUSTOM_HEADER_VALUE_1)
+
 	if err != nil {
 		// Handle error while creating the request and show appropriate response
 		response.ShowResponse(utils.SERVER_ERROR, utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)

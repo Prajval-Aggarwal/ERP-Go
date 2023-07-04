@@ -33,7 +33,9 @@ func LogoutService(ctx *gin.Context, emailId string) {
 	fmt.Println("session token: ", sessionToken)
 
 	//call mattermost logout api
+
 	reqst, err := http.NewRequest(utils.REQUEST_POST, utils.MATTERMOST_LOGOUT_URL, nil)
+
 
 	if err != nil {
 		response.ShowResponse(utils.SERVER_ERROR, utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)

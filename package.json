@@ -1,0 +1,7 @@
+{
+    "apps" : [{
+      "name"        : "erp-go-server",
+      "script"      : "./main"
+    }]
+}
+

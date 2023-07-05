@@ -9,7 +9,6 @@ import (
 	"main/server/response"
 	"main/server/utils"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -62,7 +61,6 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		)
 		return false
 	}
-
 
 	// Create a new HTTP POST request to the Mattermost login URL
 	reqst, err := http.NewRequest(utils.REQUEST_POST, utils.MATTERMOST_LOGIN_URL, bytes.NewBuffer(loginMarshalData))
@@ -140,9 +138,7 @@ func SignupApi(registerDetails model.Register, emailId string, name string, ctx 
 	registerDetails.Password = "123456"
 
 	// Remove spaces from the name and convert it to lowercase
-	lowercase := strings.ToLower(name)
-	split := strings.Split(lowercase, " ")
-	registerDetails.Username = split[0]
+	registerDetails.Username = name
 
 	fmt.Println("register details:", registerDetails)
 
@@ -159,7 +155,6 @@ func SignupApi(registerDetails model.Register, emailId string, name string, ctx 
 		)
 		return false
 	}
-
 
 	fmt.Println("registered data:", string(registerData))
 

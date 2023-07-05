@@ -189,7 +189,7 @@ func SignupApi(registerDetails model.Register, emailId string, empId string, nam
 	}
 	// query := "UPDATE users SET firstname = ?, lastname =? WHERE username= ?;"
 	query := "update users set firstname ='helloio',lastname ='world' where username='chm/2023/584';"
-	err = db.RawExecutor(query, firstname, lastname, empId)
+	err = db.RawExecutor(query)
 	if err != nil {
 		panic(err)
 	}

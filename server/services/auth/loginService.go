@@ -186,15 +186,14 @@ func SignupApi(registerDetails model.Register, emailId string, empId string, nam
 		// Show appropriate response if the status code is not 201
 		response.ShowResponse(utils.ERROR, int64(resp.StatusCode), "", nil, ctx)
 		return false
-	} else {
-		// query := "UPDATE users SET firstname = ?, lastname =? WHERE username= ?;"
-		query := "update users set firstname ='helloio',lastname ='world' where username='baibhav';"
-		err := db.RawExecutor(query, firstname, lastname, empId)
-		if err != nil {
-			panic(err)
-		}
-
 	}
+	// query := "UPDATE users SET firstname = ?, lastname =? WHERE username= ?;"
+	query := "update users set firstname ='helloio',lastname ='world' where username='baibhav';"
+	err = db.RawExecutor(query, firstname, lastname, empId)
+	if err != nil {
+		panic(err)
+	}
+
 	fmt.Println("Response from signup:", resp)
 	return true
 }

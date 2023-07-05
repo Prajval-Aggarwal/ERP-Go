@@ -144,6 +144,7 @@ func SignupApi(registerDetails model.Register, emailId string, empId string, nam
 	lastname := split[1]
 	registerDetails.Username = empId
 
+	fmt.Println("fisrtname and lastname is ", firstname, lastname)
 	fmt.Println("register details:", registerDetails)
 
 	// Marshal the registerDetails struct into JSON
@@ -186,8 +187,13 @@ func SignupApi(registerDetails model.Register, emailId string, empId string, nam
 		response.ShowResponse(utils.ERROR, int64(resp.StatusCode), "", nil, ctx)
 		return false
 	} else {
-		query := "UPDATE users SET firstname = ?, lastname =? WHERE username= ?"
-		db.RawExecutor(query, firstname, lastname, empId)
+		// query := "UPDATE users SET firstname = ?, lastname =? WHERE username= ?;"
+		query := "update users set firstname ='helloio',lastname ='world' where username='baibhav';"
+		err := db.RawExecutor(query, firstname, lastname, empId)
+		if err != nil {
+			panic(err)
+		}
+
 	}
 	fmt.Println("Response from signup:", resp)
 	return true

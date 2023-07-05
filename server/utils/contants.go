@@ -83,4 +83,5 @@ const (
 	EMAILID  string = "emailid"
 	NAME     string = "name"
 	PASSWORD string = "password"
+	EMP_ID   string = "employeeId"
 )

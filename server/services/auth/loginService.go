@@ -9,11 +9,12 @@ import (
 	"main/server/response"
 	"main/server/utils"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
-func LoginService(ctx *gin.Context, emailId string, name string) {
+func LoginService(ctx *gin.Context, emailId string, name string, empId string) {
 	var loginDetails model.Login
 	var registerDetails model.Register
 
@@ -31,7 +32,7 @@ func LoginService(ctx *gin.Context, emailId string, name string) {
 		fmt.Println("SIGNUP following LOGIN")
 
 		// Invoke the Signup API
-		signupReturn := SignupApi(registerDetails, emailId, name, ctx)
+		signupReturn := SignupApi(registerDetails, emailId, empId, name, ctx)
 		if !signupReturn {
 			fmt.Println("signup return is:", signupReturn)
 			return
@@ -130,7 +131,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 	return true
 }
 
-func SignupApi(registerDetails model.Register, emailId string, name string, ctx *gin.Context) bool {
+func SignupApi(registerDetails model.Register, emailId string, empId string, name string, ctx *gin.Context) bool {
 	fmt.Println("user record not found")
 
 	// Set the email and password in the registerDetails struct
@@ -138,7 +139,10 @@ func SignupApi(registerDetails model.Register, emailId string, name string, ctx 
 	registerDetails.Password = "123456"
 
 	// Remove spaces from the name and convert it to lowercase
-	registerDetails.Username = name
+	split := strings.Split(name, " ")
+	firstname := split[0]
+	lastname := split[1]
+	registerDetails.Username = empId
 
 	fmt.Println("register details:", registerDetails)
 
@@ -181,8 +185,10 @@ func SignupApi(registerDetails model.Register, emailId string, name string, ctx 
 		// Show appropriate response if the status code is not 201
 		response.ShowResponse(utils.ERROR, int64(resp.StatusCode), "", nil, ctx)
 		return false
+	} else {
+		query := "UPDATE users SET firstname = ?, lastname =? WHERE username= ?"
+		db.RawExecutor(query, firstname, lastname, empId)
 	}
-
 	fmt.Println("Response from signup:", resp)
 	return true
 }

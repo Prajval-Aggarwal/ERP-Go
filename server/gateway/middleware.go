@@ -73,7 +73,10 @@ func UserDetailsMiddleware(ctx *gin.Context) {
 		return
 	}
 	fmt.Println("erp details results:", erpDetails)
-	ctx.Set("name", erpDetails.Data.EmployeeId)
+
+	ctx.Set("employeeId", erpDetails.Data.EmployeeId)
+	ctx.Set("name", erpDetails.Data.Name)
+
 	ctx.Set("emailid", erpDetails.Data.SkypeId.Email)
 	ctx.Next()
 

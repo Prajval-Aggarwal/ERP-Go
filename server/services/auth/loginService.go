@@ -71,6 +71,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		return false
 	}
 
+	fmt.Println("request in login is", reqst)
 	// Add custom header to the request
 	reqst.Header.Add(utils.CUSTOM_HEADER_KEY_1, utils.CUSTOM_HEADER_VALUE_1)
 
@@ -82,6 +83,8 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		return false
 	}
 
+	fmt.Println("response from login is", resp)
+
 	// Check the response status code
 	if resp.StatusCode != 200 {
 		// Show appropriate response if the status code is not 200
@@ -89,6 +92,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		return false
 	}
 
+	fmt.Println("cookies are ", resp.Cookies())
 	// Extract the required cookies from the response
 	mmauthtoken := resp.Cookies()[0]
 	mmuserid := resp.Cookies()[1]
@@ -159,8 +163,6 @@ func SignupApi(registerDetails model.Register, emailId string, name string, ctx 
 		return false
 	}
 
-	fmt.Println("registered data:", string(registerData))
-
 	// Create a new HTTP POST request to the Mattermost signup URL
 	reqst, err := http.NewRequest(utils.REQUEST_POST, utils.MATTERMOST_SIGNUP_URL, bytes.NewBuffer(registerData))
 	reqst.Header.Add(utils.CUSTOM_HEADER_KEY_1, utils.CUSTOM_HEADER_VALUE_1)
@@ -171,6 +173,7 @@ func SignupApi(registerDetails model.Register, emailId string, name string, ctx 
 		return false
 	}
 
+	fmt.Println("signup request is ", reqst)
 	// Perform the HTTP request
 	resp, err := http.DefaultClient.Do(reqst)
 	if err != nil {
@@ -179,6 +182,7 @@ func SignupApi(registerDetails model.Register, emailId string, name string, ctx 
 		return false
 	}
 
+	fmt.Println("sign up resposne is ", resp)
 	// Check the response status code
 	if resp.StatusCode != 201 {
 		// Show appropriate response if the status code is not 201

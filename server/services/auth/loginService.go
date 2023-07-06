@@ -14,7 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func LoginService(ctx *gin.Context, emailId string, name string, empId string) {
+func LoginService(ctx *gin.Context, emailId string, name string) {
 	var loginDetails model.Login
 	var registerDetails model.Register
 
@@ -32,7 +32,7 @@ func LoginService(ctx *gin.Context, emailId string, name string, empId string) {
 		fmt.Println("SIGNUP following LOGIN")
 
 		// Invoke the Signup API
-		signupReturn := SignupApi(registerDetails, emailId, empId, name, ctx)
+		signupReturn := SignupApi(registerDetails, emailId, name, ctx)
 		if !signupReturn {
 			fmt.Println("signup return is:", signupReturn)
 			return
@@ -131,7 +131,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 	return true
 }
 
-func SignupApi(registerDetails model.Register, emailId string, empId string, name string, ctx *gin.Context) bool {
+func SignupApi(registerDetails model.Register, emailId string, name string, ctx *gin.Context) bool {
 	fmt.Println("user record not found")
 
 	// Set the email and password in the registerDetails struct
@@ -141,10 +141,8 @@ func SignupApi(registerDetails model.Register, emailId string, empId string, nam
 	// Remove spaces from the name and convert it to lowercase
 	split := strings.Split(name, " ")
 	firstname := split[0]
-	lastname := split[1]
-	registerDetails.Username = empId
+	registerDetails.Username = firstname
 
-	fmt.Println("fisrtname and lastname is ", firstname, lastname)
 	fmt.Println("register details:", registerDetails)
 
 	// Marshal the registerDetails struct into JSON
@@ -187,13 +185,6 @@ func SignupApi(registerDetails model.Register, emailId string, empId string, nam
 		response.ShowResponse(utils.ERROR, int64(resp.StatusCode), "", nil, ctx)
 		return false
 	}
-	query := "UPDATE users SET firstname = ?, lastname =? WHERE username= ?;"
-	// query := "update users set firstname ='helloio',lastname ='world' where username='CHM/2023/584';"
-	err = db.RawExecutor(query, firstname, lastname, strings.ToLower(empId))
-	if err != nil {
-		panic(err)
-	}
-
 	fmt.Println("Response from signup:", resp)
 	return true
 }

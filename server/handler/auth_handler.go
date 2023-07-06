@@ -10,8 +10,7 @@ import (
 func LoginHandler(ctx *gin.Context) {
 	emailId, _ := ctx.Get(utils.EMAILID)
 	name, _ := ctx.Get(utils.NAME)
-	empId, _ := ctx.Get(utils.EMP_ID)
-	auth.LoginService(ctx, emailId.(string), name.(string), empId.(string))
+	auth.LoginService(ctx, emailId.(string), name.(string))
 }
 func LogoutHandler(ctx *gin.Context) {
 	emailId, _ := ctx.Get(utils.EMAILID)

@@ -65,7 +65,7 @@ const (
 )
 
 const (
-	BASE_URL                        string = "https://webapp.staging.chicmic.co.in/"
+	BASE_URL                        string = "https://mattermost.local.chicmic.co.in/"
 	STAGING_USER_AUTHENTICATION_URL string = "https://timedragon.staging.frimustechnologies.com/v1/auth/check_authenticated"
 	REQUEST_POST                    string = "POST"
 	STAGING_USER_URL                string = "https://timedragon.staging.frimustechnologies.com/v1/user?_id="

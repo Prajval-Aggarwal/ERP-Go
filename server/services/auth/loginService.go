@@ -71,9 +71,9 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		return false
 	}
 
-	fmt.Println("request in login is", reqst)
 	// Add custom header to the request
-	reqst.Header.Add(utils.CUSTOM_HEADER_KEY_1, utils.CUSTOM_HEADER_VALUE_1)
+	reqst.Header.Add("X-Requested-With", "XMLHttpRequest")
+	fmt.Println("request in login is", reqst.Header)
 
 	// Perform the HTTP request
 	resp, err := http.DefaultClient.Do(reqst)
@@ -165,7 +165,7 @@ func SignupApi(registerDetails model.Register, emailId string, name string, ctx 
 
 	// Create a new HTTP POST request to the Mattermost signup URL
 	reqst, err := http.NewRequest(utils.REQUEST_POST, utils.MATTERMOST_SIGNUP_URL, bytes.NewBuffer(registerData))
-	reqst.Header.Add(utils.CUSTOM_HEADER_KEY_1, utils.CUSTOM_HEADER_VALUE_1)
+	reqst.Header.Add("X-Requested-With", "XMLHttpRequest")
 
 	if err != nil {
 		// Handle error while creating the request and show appropriate response

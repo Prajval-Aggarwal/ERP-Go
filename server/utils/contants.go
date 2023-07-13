@@ -65,17 +65,17 @@ const (
 )
 
 const (
-	BASE_URL                        string = "https://mattermost.local.chicmic.co.in/"
-	STAGING_USER_AUTHENTICATION_URL string = "https://timedragon.staging.frimustechnologies.com/v1/auth/check_authenticated"
+	BASE_URL                        string = "https://chat.internal.timedragon.chicmic.in"
+	STAGING_USER_AUTHENTICATION_URL string = "https://apigateway.erp.chicmic.in/v1/auth/check_authenticated"
 	REQUEST_POST                    string = "POST"
-	STAGING_USER_URL                string = "https://timedragon.staging.frimustechnologies.com/v1/user?_id="
+	STAGING_USER_URL                string = "https://apigateway.erp.chicmic.in/v1/user?_id="
 	REQUEST_GET                     string = "GET"
-	MATTERMOST_LOGIN_URL            string = BASE_URL + "api/v4/users/login"
-	MATTERMOST_SIGNUP_URL           string = BASE_URL + "api/v4/users"
-	MATTERMOST_LOGOUT_URL           string = BASE_URL + "api/v4/users/logout"
+	MATTERMOST_LOGIN_URL            string = BASE_URL + "/api/v4/users/login"
+	MATTERMOST_SIGNUP_URL           string = BASE_URL + "/api/v4/users"
+	MATTERMOST_LOGOUT_URL           string = BASE_URL + "/api/v4/users/logout"
 	CUSTOM_HEADER_KEY_1             string = "X-Requested-With"
 	CUSTOM_HEADER_VALUE_1           string = "XMLHttpRequest"
-	STAGING_DOMAIN                  string = ".chicmic.co.in"
+	STAGING_DOMAIN                  string = ".chicmic.in"
 	DATA_FETCH_SUCESS               string = "Data Fetched sucessfully"
 )
 

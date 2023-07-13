@@ -36,13 +36,12 @@ func LogoutService(ctx *gin.Context, emailId string) {
 
 	reqst, err := http.NewRequest(utils.REQUEST_POST, utils.MATTERMOST_LOGOUT_URL, nil)
 
-
 	if err != nil {
 		response.ShowResponse(utils.SERVER_ERROR, utils.HTTP_INTERNAL_SERVER_ERROR, err.Error(), nil, ctx)
 		return
 
 	}
-	reqst.Header.Add(utils.CUSTOM_HEADER_KEY_1, utils.CUSTOM_HEADER_VALUE_1)
+	reqst.Header.Add("X-Requested-With", "XMLHttpRequest")
 	reqst.Header.Add("Cookie", "MMAUTHTOKEN="+sessionToken)
 
 	//reqst.Header.Add("Origin", ctx.Request.Header.Get("Origin"))

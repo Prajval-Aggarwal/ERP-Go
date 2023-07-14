@@ -14,7 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func LoginService(ctx *gin.Context, emailId string, name string) {
+func LoginService(ctx *gin.Context, emailId string, name string, empId string) {
 	var loginDetails model.Login
 	var registerDetails model.Register
 
@@ -32,7 +32,7 @@ func LoginService(ctx *gin.Context, emailId string, name string) {
 		fmt.Println("SIGNUP following LOGIN")
 
 		// Invoke the Signup API
-		signupReturn := SignupApi(registerDetails, emailId, name, ctx)
+		signupReturn := SignupApi(registerDetails, emailId, name, empId, ctx)
 		if !signupReturn {
 			fmt.Println("signup return is:", signupReturn)
 			return
@@ -135,7 +135,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 	return true
 }
 
-func SignupApi(registerDetails model.Register, emailId string, name string, ctx *gin.Context) bool {
+func SignupApi(registerDetails model.Register, emailId string, name string, empId string, ctx *gin.Context) bool {
 	fmt.Println("user record not found")
 
 	// Set the email and password in the registerDetails struct
@@ -144,8 +144,16 @@ func SignupApi(registerDetails model.Register, emailId string, name string, ctx 
 
 	// Remove spaces from the name and convert it to lowercase
 	split := strings.Split(name, " ")
-	firstname := split[0]
-	registerDetails.Username = firstname
+	fullName := ""
+	for i := 0; i < len(split); i++ {
+		if i != len(split)-1 {
+
+			fullName += split[i] + "_"
+		}
+		fullName += split[i]
+	}
+
+	registerDetails.Username = fullName + "(" + empId + ")"
 
 	fmt.Println("register details:", registerDetails)
 

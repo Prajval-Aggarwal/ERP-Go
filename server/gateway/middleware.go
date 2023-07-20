@@ -76,6 +76,7 @@ func UserDetailsMiddleware(ctx *gin.Context) {
 	ctx.Set("emailid", erpDetails.Data.SkypeId.Email)
 	ctx.Set("employeeId", erpDetails.Data.EmployeeId)
 	ctx.Set("name", erpDetails.Data.Name)
+	ctx.Set("token", token)
 	ctx.Next()
 
 }

@@ -14,7 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func LoginService(ctx *gin.Context, emailId string, name string) {
+func LoginService(ctx *gin.Context, token string, emailId string, name string, empId string) {
 	var loginDetails model.Login
 	var registerDetails model.Register
 
@@ -22,7 +22,7 @@ func LoginService(ctx *gin.Context, emailId string, name string) {
 	if db.RecordExist("users", emailId, "email") {
 		fmt.Println("LOGIN APIS")
 		// Invoke the Login API
-		loginReturn := LoginApi(loginDetails, emailId, ctx)
+		loginReturn := LoginApi(token, loginDetails, emailId, ctx)
 		if !loginReturn {
 			fmt.Println("login return is:", loginReturn)
 			return
@@ -39,17 +39,18 @@ func LoginService(ctx *gin.Context, emailId string, name string) {
 		}
 
 		// Signup successful, now invoke the Login API
-		loginReturn := LoginApi(loginDetails, emailId, ctx)
+		loginReturn := LoginApi(token, loginDetails, emailId, ctx)
 		fmt.Println("login return is", loginReturn)
 	}
 }
 
-func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
+func LoginApi(token string, loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 	// Set the email and password in the loginDetails struct
+	fmt.Println("user token:", token)
 	loginDetails.Email = emailId
-	loginDetails.Password = "123456"
-
+	loginDetails.Password = "123456" //get this password from db corresponding to the email we are getting from token
 	// Marshal the loginDetails struct into JSON
+	loginDetails.Token = token
 	loginMarshalData, err := json.Marshal(&loginDetails)
 	if err != nil {
 		// Handle encoding error and show appropriate response

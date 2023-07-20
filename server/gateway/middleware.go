@@ -74,8 +74,7 @@ func UserDetailsMiddleware(ctx *gin.Context) {
 	}
 	fmt.Println("erp details results:", erpDetails)
 	ctx.Set("name", erpDetails.Data.Name)
-
-	ctx.Set("emailid", erpDetails.Data.SkypeId.Email)
+	ctx.Set("token", token)
 	ctx.Next()
 
 }

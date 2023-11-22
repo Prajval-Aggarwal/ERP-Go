@@ -66,17 +66,22 @@ const (
 
 const (
 	BASE_URL                        string = "https://chat.internal.timedragon.chicmic.in"
-	STAGING_USER_AUTHENTICATION_URL string = "https://apigateway.erp.chicmic.in/v1/auth/check_authenticated"
-	REQUEST_POST                    string = "POST"
-	STAGING_USER_URL                string = "https://apigateway.erp.chicmic.in/v1/user?_id="
-	REQUEST_GET                     string = "GET"
-	MATTERMOST_LOGIN_URL            string = BASE_URL + "/api/v4/users/login"
-	MATTERMOST_SIGNUP_URL           string = BASE_URL + "/api/v4/users"
-	MATTERMOST_LOGOUT_URL           string = BASE_URL + "/api/v4/users/logout"
-	CUSTOM_HEADER_KEY_1             string = "X-Requested-With"
-	CUSTOM_HEADER_VALUE_1           string = "XMLHttpRequest"
-	STAGING_DOMAIN                  string = ".chicmic.in"
-	DATA_FETCH_SUCESS               string = "Data Fetched sucessfully"
+	LOCAL_URL                       string = "http://localhost:8065"
+	STAGING_USER_AUTHENTICATION_URL string = "https://timedragon.staging.chicmic.co.in/v1/auth/check_authenticated"
+	LOCAL_USER_AUTHENTICATION_URL   string = "http://192.180.3.74/v1/auth/check_authenticated"
+
+	REQUEST_POST          string = "POST"
+	STAGING_USER_URL      string = "https://timedragon.staging.chicmic.co.in/v1/user?_id="
+	REQUEST_GET           string = "GET"
+	MATTERMOST_LOGIN_URL  string = LOCAL_URL + "/api/v4/users/login"
+	MATTERMOST_SIGNUP_URL string = LOCAL_URL + "/api/v4/users"
+	MATTERMOST_LOGOUT_URL string = LOCAL_URL + "/api/v4/users/logout"
+	CHANNEL_URL           string = LOCAL_URL + "/api/v4/channels"
+	CUSTOM_HEADER_KEY_1   string = "X-Requested-With"
+	CUSTOM_HEADER_VALUE_1 string = "XMLHttpRequest"
+	STAGING_DOMAIN        string = ".chicmic.in"
+	LOCAL_DOMAIN          string = "localhost"
+	DATA_FETCH_SUCESS     string = "Data Fetched sucessfully"
 )
 
 const (

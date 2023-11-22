@@ -22,6 +22,13 @@ func ConfigureRoutes(server *Server) {
 	server.engine.POST("/logout", provider.UserDetailsMiddleware, handler.LogoutHandler)
 	server.engine.POST("/reset", provider.ResetMiddleware, handler.ResetHandler)
 	server.engine.GET("/get-cookies", provider.UserDetailsMiddleware, handler.CookieHandler)
+
+	//Channel routes
+	server.engine.POST("/channel/create", provider.UserDetailsMiddleware, handler.CreateChannelHandler)
+	server.engine.POST("/channel/add-users", provider.UserDetailsMiddleware, handler.AddUsersHandler)
+	server.engine.DELETE("/channel/remove-users", provider.UserDetailsMiddleware, handler.RemoveUsersHandler)
+	server.engine.POST("/channel/delete-inactive-user", provider.UserDetailsMiddleware, handler.DeleteInactiveUsersHandler)
+
 	server.engine.GET("/get-channels", handler.ChannelHandler)
 
 }

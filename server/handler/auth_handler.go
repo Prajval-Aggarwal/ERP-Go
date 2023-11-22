@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"main/server/request"
+	"main/server/response"
 	"main/server/services/auth"
 	"main/server/utils"
 
@@ -26,4 +28,43 @@ func ResetHandler(ctx *gin.Context) {
 func CookieHandler(ctx *gin.Context) {
 	emailId, _ := ctx.Get(utils.EMAILID)
 	auth.CookieService(ctx, emailId.(string))
+}
+
+func CreateChannelHandler(ctx *gin.Context) {
+	emailId, _ := ctx.Get(utils.EMAILID)
+
+	var req request.CreateChannelRequest
+	err := utils.RequestDecoding(ctx, &req)
+	if err != nil {
+		response.ShowResponse(err.Error(), utils.HTTP_BAD_REQUEST, utils.FAILURE, nil, ctx)
+		return
+	}
+
+	auth.CreateChannel(ctx, emailId.(string), req)
+
+}
+
+func AddUsersHandler(ctx *gin.Context) {
+
+	emailId, _ := ctx.Get(utils.EMAILID)
+	var req request.AddMemeber
+	err := utils.RequestDecoding(ctx, &req)
+	if err != nil {
+		response.ShowResponse(err.Error(), utils.HTTP_BAD_REQUEST, utils.FAILURE, nil, ctx)
+		return
+	}
+
+	auth.AddUsersToChannel(ctx, emailId.(string), req)
+}
+
+func RemoveUsersHandler(ctx *gin.Context) {
+	emailId, _ := ctx.Get(utils.EMAILID)
+	var req request.AddMemeber
+	err := utils.RequestDecoding(ctx, &req)
+	if err != nil {
+		response.ShowResponse(err.Error(), utils.HTTP_BAD_REQUEST, utils.FAILURE, nil, ctx)
+		return
+	}
+
+	auth.RemoveUsersFromChannel(ctx, emailId.(string), req)
 }

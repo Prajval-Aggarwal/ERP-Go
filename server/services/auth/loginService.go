@@ -47,7 +47,7 @@ func LoginService(ctx *gin.Context, emailId string, name string, empId string) {
 func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 	// Set the email and password in the loginDetails struct
 	loginDetails.Email = emailId
-	loginDetails.Password = "123456"
+	loginDetails.Password = "12345678"
 
 	// Marshal the loginDetails struct into JSON
 	loginMarshalData, err := json.Marshal(&loginDetails)
@@ -73,7 +73,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 
 	// Add custom header to the request
 	reqst.Header.Add("X-Requested-With", "XMLHttpRequest")
-	fmt.Println("request in login is", reqst.Header)
+	//fmt.Println("request in login is", reqst.Header)
 
 	// Perform the HTTP request
 	resp, err := http.DefaultClient.Do(reqst)
@@ -83,7 +83,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		return false
 	}
 
-	fmt.Println("response from login is", resp)
+	//fmt.Println("response from login is", resp)
 
 	// Check the response status code
 	if resp.StatusCode != 200 {
@@ -92,7 +92,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		return false
 	}
 
-	fmt.Println("cookies are ", resp.Cookies())
+	//fmt.Println("cookies are ", resp.Cookies())
 	// Extract the required cookies from the response
 	mmauthtoken := resp.Cookies()[0]
 	mmuserid := resp.Cookies()[1]
@@ -103,7 +103,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		Name:     "MMAUTHTOKEN",
 		Value:    mmauthtoken.Value,
 		MaxAge:   mmauthtoken.MaxAge,
-		Domain:   utils.STAGING_DOMAIN,
+		Domain:   utils.LOCAL_DOMAIN,
 		Path:     "/",
 		HttpOnly: false,
 	}
@@ -111,7 +111,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		Name:     "MMUSERID",
 		Value:    mmuserid.Value,
 		MaxAge:   mmuserid.MaxAge,
-		Domain:   utils.STAGING_DOMAIN,
+		Domain:   utils.LOCAL_DOMAIN,
 		Path:     "/",
 		HttpOnly: false,
 	}
@@ -119,7 +119,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 		Name:     "MMCSRF",
 		Value:    mmcsrf.Value,
 		MaxAge:   mmcsrf.MaxAge,
-		Domain:   utils.STAGING_DOMAIN,
+		Domain:   utils.LOCAL_DOMAIN,
 		Path:     "/",
 		HttpOnly: false,
 	}
@@ -130,7 +130,7 @@ func LoginApi(loginDetails model.Login, emailId string, ctx *gin.Context) bool {
 	http.SetCookie(ctx.Writer, mmcsrfCookie)
 
 	// Show the login success response
-	response.ShowResponse(utils.LOGIN_SUCCESSFULL, utils.HTTP_OK, utils.SUCCESS, nil, ctx)
+	// response.ShowResponse(utils.LOGIN_SUCCESSFULL, utils.HTTP_OK, utils.SUCCESS, nil, ctx)
 
 	return true
 }
@@ -140,7 +140,7 @@ func SignupApi(registerDetails model.Register, emailId string, name string, empI
 
 	// Set the email and password in the registerDetails struct
 	registerDetails.Email = emailId
-	registerDetails.Password = "123456"
+	registerDetails.Password = "12345678"
 
 	// Remove spaces from the name and convert it to lowercase
 	split := strings.Split(name, " ")

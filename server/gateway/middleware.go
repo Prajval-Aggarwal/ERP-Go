@@ -27,6 +27,7 @@ func UserDetailsMiddleware(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
+
 	req, err := http.NewRequest(utils.REQUEST_POST, utils.STAGING_USER_AUTHENTICATION_URL, nil)
 	if err != nil {
 		response.ShowResponse(
@@ -76,6 +77,7 @@ func UserDetailsMiddleware(ctx *gin.Context) {
 	ctx.Set("emailid", erpDetails.Data.SkypeId.Email)
 	ctx.Set("employeeId", erpDetails.Data.EmployeeId)
 	ctx.Set("name", erpDetails.Data.Name)
+	ctx.Set("token", token)
 	ctx.Next()
 
 }
